@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Watch Setter POC</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="wrap">
+      <h1>Watch Setter (POC)</h1>
+      <p class="muted">
+        Use this to visually match your watch’s seconds/minutes/hours. Moonphase is an offline approximation (no API).
+      </p>
+    </header>
+
+    <main class="wrap grid">
+      <!-- CLOCK -->
+      <section class="card">
+        <h2>Reference Time</h2>
+
+        <div class="clock-row">
+          <div class="clock" aria-label="Analog clock">
+            <div class="dial"></div>
+
+            <div class="hand hour" id="hourHand"></div>
+            <div class="hand minute" id="minuteHand"></div>
+            <div class="hand second" id="secondHand"></div>
+
+            <div class="pin"></div>
+            <div class="ticks" id="ticks"></div>
+          </div>
+
+          <div class="readout">
+            <div class="big" id="digitalTime">--:--:--</div>
+            <div class="muted" id="digitalDate">---</div>
+
+            <div class="controls">
+              <label class="row">
+                <span>Time source</span>
+                <select id="timeSource">
+                  <option value="local">Local computer time</option>
+                  <option value="utc">UTC</option>
+                </select>
+              </label>
+
+              <label class="row">
+                <span>Show milliseconds</span>
+                <input type="checkbox" id="showMs" />
+              </label>
+            </div>
+
+            <p class="tip">
+              Tip: Align your watch’s seconds hand with the live seconds hand here, then set minutes/hour.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- MOONPHASE -->
+      <section class="card">
+        <h2>Moonphase (Approx.)</h2>
+
+        <div class="moon-row">
+          <canvas id="moonCanvas" width="220" height="220" aria-label="Moon phase display"></canvas>
+
+          <div class="readout">
+            <div class="big" id="moonName">---</div>
+            <div class="muted">
+              Illumination: <span id="moonIllum">--</span>%
+            </div>
+            <div class="muted">
+              Moon age: <span id="moonAge">--</span> days (0 = new)
+            </div>
+
+            <div class="controls">
+              <label class="row">
+                <span>Update rate</span>
+                <select id="moonUpdateRate">
+                  <option value="10">Every 10 seconds</option>
+                  <option value="60" selected>Every 60 seconds</option>
+                  <option value="300">Every 5 minutes</option>
+                </select>
+              </label>
+
+              <button id="moonRecalcBtn" type="button">Recalculate now</button>
+            </div>
+
+            <p class="tip">
+              Note: Real moonphase can differ slightly from this approximation (timezones, orbital details, etc.),
+              but it’s usually close enough for “setting a watch” purposes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- OPTIONAL: WATCH LIST (POC placeholder) -->
+      <section class="card">
+        <h2>Your Watches (Optional)</h2>
+        <p class="muted">
+          This is just a placeholder area you can extend later (save names, offsets, notes, etc.).
+        </p>
+
+        <div class="watch-list">
+          <label class="row">
+            <span>Add watch name</span>
+            <input id="watchName" placeholder="e.g., Speedmaster Moonphase" />
+          </label>
+          <button id="addWatchBtn" type="button">Add</button>
+
+          <ul id="watchItems" class="items"></ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="wrap muted small">
+      Built as a simple offline POC — extend however you like.
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

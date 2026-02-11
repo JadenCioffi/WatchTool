@@ -1,0 +1,178 @@
+:root {
+  --bg: #0b0d12;
+  --card: #141826;
+  --text: #e9ecf1;
+  --muted: #a8b0c0;
+  --line: rgba(255, 255, 255, 0.12);
+  --accent: #6ea8ff;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(1200px 800px at 30% 10%, #141a2a, var(--bg));
+  color: var(--text);
+}
+
+.wrap { max-width: 980px; margin: 0 auto; padding: 18px; }
+.grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+
+h1 { margin: 0 0 6px; font-size: 24px; }
+h2 { margin: 0 0 12px; font-size: 18px; }
+p { margin: 8px 0; }
+
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+
+.clock-row, .moon-row {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 14px;
+  align-items: center;
+}
+
+.readout .big {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.controls {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+input, select, button {
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+  padding: 10px 10px;
+  outline: none;
+}
+
+select { color-scheme: dark; }
+select option, select optgroup {
+  background: #141826;
+  color: #e9ecf1;
+}
+
+button {
+  cursor: pointer;
+  background: rgba(110,168,255,0.15);
+  border-color: rgba(110,168,255,0.35);
+}
+button:hover { background: rgba(110,168,255,0.22); }
+
+.tip {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--muted);
+  border-left: 3px solid rgba(110,168,255,0.4);
+  padding-left: 10px;
+}
+
+/* ANALOG CLOCK */
+.clock {
+  width: 240px;
+  height: 240px;
+  border-radius: 999px;
+  position: relative;
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), rgba(255,255,255,0.02)),
+    radial-gradient(circle at 70% 80%, rgba(110,168,255,0.06), transparent 50%);
+  overflow: hidden;
+}
+
+.dial {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 8px rgba(0,0,0,0.18);
+}
+
+.ticks {
+  position: absolute;
+  inset: 0;
+}
+
+.tick {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 10px;
+  background: rgba(255,255,255,0.35);
+  transform-origin: center;
+}
+
+.tick.major {
+  height: 16px;
+  width: 3px;
+  background: rgba(255,255,255,0.65);
+  transform-origin: center
+}
+
+.hand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: 50% 100%;
+  transform: translate(-50%, -100%) rotate(0deg);
+  border-radius: 999px;
+}
+
+.hand.hour {
+  width: 6px;
+  height: 70px;
+  background: rgba(255,255,255,0.78);
+}
+
+.hand.minute {
+  width: 4px;
+  height: 95px;
+  background: rgba(255,255,255,0.65);
+}
+
+.hand.second {
+  width: 2px;
+  height: 104px;
+  background: var(--accent);
+  box-shadow: 0 0 18px rgba(110,168,255,0.35);
+}
+
+.pin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.9);
+}
+
+/* WATCH LIST */
+.watch-list { display: grid; gap: 10px; }
+.items { margin: 0; padding-left: 18px; }
+.items li { margin: 6px 0; }
+
