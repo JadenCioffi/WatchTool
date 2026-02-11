@@ -19,6 +19,7 @@ const digitalDate = document.getElementById("digitalDate");
 
 const timeSource = document.getElementById("timeSource");
 const showMs = document.getElementById("showMs");
+const useAmPm = document.getElementById("useAmPm");
 
 function getNow() {
   const now = new Date();
@@ -65,7 +66,20 @@ function updateClock() {
   hourHand.style.transform = `translate(-50%, -100%) rotate(${hourAngle}deg)`;
 
   const msPart = showMs.checked ? `.${String(ms).padStart(3, "0")}` : "";
-  digitalTime.textContent = `${pad2(h)}:${pad2(m)}:${pad2(s)}${msPart}`;
+  //digitalTime.textContent = `${pad2(h)}:${pad2(m)}:${pad2(s)}${msPart}`;
+  
+  // add AM/PM functionality
+  let displayHour = h;
+  let suffix = "";
+
+  if (useAmPm.checked) {
+    suffix = h >= 12 ? " PM" : " AM";
+    displayHour = h % 12;
+    if (displayHour === 0) displayHour = 12; // midnight/noon correction
+  }
+
+  digitalTime.textContent =
+    `${pad2(displayHour)}:${pad2(m)}:${pad2(s)}${msPart}${suffix}`;
 
   const date = new Date(Date.UTC(year, month, day));
   const dateStr = timeSource.value === "utc"
