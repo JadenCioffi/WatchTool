@@ -151,23 +151,31 @@ function getMoonPhaseInfo(date) {
   const illum = (1 - Math.cos(2 * Math.PI * phase)) / 2;
 
   // Phase name buckets (8-phase)
-  const name = phaseNameFromPhase(phase);
+  const name = phaseNameFromAge(phase, synodicMonth);
 
   return { phase, age, illum, name };
 }
 
-function phaseNameFromPhase(phase) {
-  // phase in [0,1)
-  // 0 = New, 0.25 = First Quarter, 0.5 = Full, 0.75 = Last Quarter
-  const eighth = 1 / 8;
+function phaseNameFromAge(age, synodicMonth) {
+  // Age in days since new moon
+  const newMoon = 0;
+  const firstQuarter = synodicMonth * 0.25; // ~7.38
+  const fullMoon = synodicMonth * 0.5;      // ~14.77
+  const lastQuarter = synodicMonth * 0.75;  // ~22.15
 
-  if (phase < 1 * eighth) return "New Moon";
-  if (phase < 2 * eighth) return "Waxing Crescent";
-  if (phase < 3 * eighth) return "First Quarter";
-  if (phase < 4 * eighth) return "Waxing Gibbous";
-  if (phase < 5 * eighth) return "Full Moon";
-  if (phase < 6 * eighth) return "Waning Gibbous";
-  if (phase < 7 * eighth) return "Last Quarter";
+  // “Primary phases” should be narrow windows, not huge ranges.
+  const windowDays = 1.0; // tighten/loosen if you want (0.7–1.2 are common)
+
+  const within = (x, center) => Math.abs(x - center) <= windowDays;
+
+  if (within(age, newMoon) || within(age, synodicMonth)) return "New Moon";
+  if (within(age, firstQuarter)) return "First Quarter";
+  if (within(age, fullMoon)) return "Full Moon";
+  if (within(age, lastQuarter)) return "Last Quarter";
+
+  if (age < firstQuarter) return "Waxing Crescent";
+  if (age < fullMoon) return "Waxing Gibbous";
+  if (age < lastQuarter) return "Waning Gibbous";
   return "Waning Crescent";
 }
 
@@ -221,7 +229,8 @@ function drawMoon(phase) {
   // Shadow circle shift
   // When waxing: shadow circle shifted right/left opposite vs waning.
   const shift = k * r; // range ~[-r..r]
-  const sx = cx + (waxing ? shift : -shift);
+  //const sx = cx + (waxing ? shift : -shift);
+  const sx = cx + (waxing ? -shift : shift);
 
   // Darken the whole disc first
   ctx.save();
