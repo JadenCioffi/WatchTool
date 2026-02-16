@@ -151,7 +151,7 @@ function getMoonPhaseInfo(date) {
   const illum = (1 - Math.cos(2 * Math.PI * phase)) / 2;
 
   // Phase name buckets (8-phase)
-  const name = phaseNameFromAge(phase, synodicMonth);
+  const name = phaseNameFromAge(age, synodicMonth);
 
   return { phase, age, illum, name };
 }
@@ -179,7 +179,7 @@ function phaseNameFromAge(age, synodicMonth) {
   return "Waning Crescent";
 }
 
-function drawMoon(phase) {
+function drawMoonByName(name) {
   const w = moonCanvas.width;
   const h = moonCanvas.height;
   const cx = w / 2;
@@ -188,20 +188,22 @@ function drawMoon(phase) {
 
   ctx.clearRect(0, 0, w, h);
 
-  // Background
+  // Halo
   ctx.beginPath();
   ctx.arc(cx, cy, r + 18, 0, Math.PI * 2);
   ctx.fillStyle = "rgba(255,255,255,0.04)";
   ctx.fill();
 
-  // Base moon disc
+  // Bright base disc
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.fillStyle = "rgba(240,243,248,0.92)";
   ctx.fill();
 
-  // Add a subtle texture noise-ish dots (super simple)
+  // Optional subtle texture
   ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.clip();
   ctx.fillStyle = "rgba(0,0,0,0.06)";
   for (let i = 0; i < 120; i++) {
@@ -214,37 +216,64 @@ function drawMoon(phase) {
   }
   ctx.restore();
 
-  // Shadow overlay to represent phase.
-  // We’ll draw a dark circle and then "cut" a shifted bright portion using composite ops.
-  // Determine waxing vs waning by whether phase < 0.5
-  const waxing = phase < 0.5;
-
-  // Convert phase to terminator shift:
-  // At new moon: fully dark (shift ~ r)
-  // At full moon: fully bright (shift ~ -r)
-  // We'll map phase to cos curve around full/new for nicer shape.
-  // k in [-1..1], where -1 = full, +1 = new
-  const k = Math.cos(2 * Math.PI * phase);
-
-  // Shadow circle shift
-  // When waxing: shadow circle shifted right/left opposite vs waning.
-  const shift = k * r; // range ~[-r..r]
-  //const sx = cx + (waxing ? shift : -shift);
-  const sx = cx + (waxing ? -shift : shift);
-
-  // Darken the whole disc first
+  // Clip all shading to the disc
   ctx.save();
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.clip();
-  ctx.fillStyle = "rgba(8,10,14,0.88)";
-  ctx.fillRect(cx - r, cy - r, 2 * r, 2 * r);
 
-  // Then add back the illuminated part by drawing a "light" circle with source-atop
-  ctx.globalCompositeOperation = "destination-out";
-  ctx.beginPath();
-  ctx.arc(sx, cy, r, 0, Math.PI * 2);
-  ctx.fill();
+  // Lookup presets (8-phase)
+  // Northern hemisphere convention:
+  //  - Waxing: lit on right
+  //  - Waning: lit on left
+  const presets = {
+    "New Moon":         { litSide: "right", litAmount: 0.00 },
+    "Waxing Crescent":  { litSide: "right", litAmount: 0.20 },
+    "First Quarter":    { litSide: "right", litAmount: 0.50 },
+    "Waxing Gibbous":   { litSide: "right", litAmount: 0.80 },
+    "Full Moon":        { litSide: "right", litAmount: 1.00 },
+    "Waning Gibbous":   { litSide: "left",  litAmount: 0.80 },
+    "Last Quarter":     { litSide: "left",  litAmount: 0.50 },
+    "Waning Crescent":  { litSide: "left",  litAmount: 0.20 },
+  };
+
+  const p = presets[name] || presets["New Moon"];
+
+  // Shadow paint
+  if (p.litAmount < 1.0) {
+    ctx.fillStyle = "rgba(8,10,14,0.88)";
+
+    const shadowAmount = 1.0 - p.litAmount; // 0 = full, 1 = new
+    const shadowW = 2 * r * shadowAmount;
+
+    // If new moon, just fill everything dark
+    if (p.litAmount <= 0.001) {
+      ctx.fillRect(cx - r, cy - r, 2 * r, 2 * r);
+    } else {
+      // Draw the main shadow block
+      if (p.litSide === "right") {
+        // Light on right => shadow on left
+        ctx.fillRect(cx - r, cy - r, shadowW, 2 * r);
+
+        // Add curved terminator by overlapping a shadow circle
+        // Place the circle center at the terminator edge, slightly offset
+        const edgeX = cx - r + shadowW;
+        const curveOffset = r * 0.55; // tweak 0.45..0.70 for more/less curvature
+        ctx.beginPath();
+        ctx.arc(edgeX - curveOffset, cy, r, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // Light on left => shadow on right
+        ctx.fillRect(cx + r - shadowW, cy - r, shadowW, 2 * r);
+
+        const edgeX = cx + r - shadowW;
+        const curveOffset = r * 0.55;
+        ctx.beginPath();
+        ctx.arc(edgeX + curveOffset, cy, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
 
   ctx.restore();
 
@@ -256,6 +285,11 @@ function drawMoon(phase) {
   ctx.stroke();
 }
 
+
+
+
+
+
 let moonTimer = null;
 
 function updateMoon() {
@@ -266,7 +300,7 @@ function updateMoon() {
   moonIllum.textContent = Math.round(info.illum * 100);
   moonAge.textContent = info.age.toFixed(2);
 
-  drawMoon(info.phase);
+  drawMoonByName(info.phase);
 }
 
 function setMoonInterval() {
