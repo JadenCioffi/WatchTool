@@ -54,7 +54,7 @@
 
             <label class="row">
               <span>12-hour (AM/PM)</span>
-              <input type="checkbox" id="useAmPm" checked/>
+              <input type="checkbox" id="useAmPm" checked />
             </label>
 
 
@@ -104,6 +104,59 @@
       </div>
     </section>
 
+    <!-- GMT / 24H BEZEL -->
+    <section class="card">
+      <h2>GMT Hand (24-hour Bezel)</h2>
+
+      <div class="clock-row">
+        <div class="clock" aria-label="24-hour GMT clock">
+          <div class="dial"></div>
+          <div class="bezel" id="gmtBezel"></div>
+
+
+          <!-- Reuse the same hand styling approach -->
+          <div class="hand gmt" id="gmtHand"></div>
+
+          <div class="pin"></div>
+          <div class="ticks" id="gmtTicks"></div>
+        </div>
+
+        <div class="readout">
+          <div class="big" id="gmtReadout">--:--</div>
+          <div class="muted" id="gmtSubReadout">---</div>
+
+          <div class="controls">
+            <label class="row">
+              <span>City</span>
+              <select id="gmtCity">
+                <option value="America/New_York">New York</option>
+                <option value="Europe/London">London</option>
+                <option value="Asia/Tokyo">Tokyo</option>
+              </select>
+
+              <label class="row">
+                <span>Bezel style</span>
+                <select id="bezelStyle">
+                  <option value="batman">Batman (black/blue)</option>
+                  <option value="coke">Coke (black/red)</option>
+                  <option value="bruce">Bruce Wayne (black/gray)</option>
+                  <option value="pepsi">Pepsi (blue/red)</option>
+                  <option value="root_beer">Root Beer (black/brown)</option>
+                </select>
+              </label>
+
+
+            </label>
+          </div>
+
+          <p class="tip">
+            This shows where the <b>GMT hand</b> should point on a <b>24-hour bezel</b> for the selected city (DST
+            handled automatically).
+          </p>
+        </div>
+      </div>
+    </section>
+
     <!-- OPTIONAL: WATCH LIST (POC placeholder) -->
     <section class="card">
       <h2>Your Watches (Optional)</h2>
@@ -124,7 +177,7 @@
   </main>
 
   <footer class="wrap muted small">
-    Built as a simple offline POC — extend however you like.
+    Built using basic ChatGPT prompting. Github page <a href="https://github.com/JadenCioffi/WatchTool">here</a>
   </footer>
 
   <script src="script.js"></script>

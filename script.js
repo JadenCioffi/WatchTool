@@ -21,6 +21,18 @@ const timeSource = document.getElementById("timeSource");
 const showMs = document.getElementById("showMs");
 const useAmPm = document.getElementById("useAmPm");
 
+// =========================
+// GMT / 24-hour bezel helper
+// =========================
+const gmtHand = document.getElementById("gmtHand");
+const gmtTicks = document.getElementById("gmtTicks");
+const gmtCity = document.getElementById("gmtCity");
+const gmtReadout = document.getElementById("gmtReadout");
+const gmtSubReadout = document.getElementById("gmtSubReadout");
+const bezelStyle = document.getElementById("bezelStyle");
+const gmtBezel = document.getElementById("gmtBezel");
+
+
 function getNow() {
   const now = new Date();
   if (timeSource.value === "utc") {
@@ -67,7 +79,7 @@ function updateClock() {
 
   const msPart = showMs.checked ? `.${String(ms).padStart(3, "0")}` : "";
   //digitalTime.textContent = `${pad2(h)}:${pad2(m)}:${pad2(s)}${msPart}`;
-  
+
   // add AM/PM functionality
   let displayHour = h;
   let suffix = "";
@@ -105,7 +117,122 @@ function updateClock() {
   }
 })();
 
+(function buildGmtTicks() {
+  // Clear any existing marks (in case of hot reload)
+  gmtTicks.innerHTML = "";
+
+  const radius = 102; // match your translateY(-102px)
+
+  for (let i = 0; i < 24; i++) {
+    const angle = i * 15; // 360/24
+
+    const el = document.createElement("div");
+    el.classList.add("gmt-mark");
+
+    // Position around circle
+    // 0 at top, increasing clockwise
+    const rad = (angle - 90) * (Math.PI / 180);
+    const x = Math.cos(rad) * radius;
+    const y = Math.sin(rad) * radius;
+
+    el.style.left = `calc(50% + ${x}px)`;
+    el.style.top = `calc(50% + ${y}px)`;
+
+    if (i === 0) {
+      // Triangle at 24/0
+      el.classList.add("gmt-tri");
+    } else if (i % 2 === 0) {
+      // Even indices: numerals 2,4,...,22
+      el.classList.add("gmt-num");
+      el.textContent = String(i);
+    } else {
+      // Odd indices: dots
+      el.classList.add("gmt-dot");
+    }
+
+    gmtTicks.appendChild(el);
+  }
+})();
+
+function applyBezelStyle(style) {
+  const styles = {
+    batman: { top: "rgba(10,10,12,0.92)", bottom: "rgba(40,70,150,0.92)" }, // black/blue
+    coke: { top: "rgba(10,10,12,0.92)", bottom: "rgba(150,35,35,0.92)" }, // black/red
+    bruce: { top: "rgba(10,10,12,0.92)", bottom: "rgba(80,85,95,0.92)" },  // black/gray
+    pepsi: { top: "rgba(40,70,150,0.92)", bottom: "rgba(150,35,35,0.92)" }, // blue/red
+    root_beer: { top: "rgba(10,10,12,0.92)", bottom: "rgb(71, 32, 26, 0.92)" } // black/brown
+
+  };
+
+  const s = styles[style] || styles.batman;
+  gmtBezel.style.setProperty("--bezel-top", s.top);
+  gmtBezel.style.setProperty("--bezel-bottom", s.bottom);
+}
+
+
 requestAnimationFrame(updateClock);
+
+
+function getTimePartsInZone(date, timeZone) {
+  // Uses built-in Intl (no API) and correctly accounts for DST.
+  const fmt = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    hour12: false,
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  const parts = fmt.formatToParts(date);
+  const get = (type) => Number(parts.find(p => p.type === type)?.value ?? 0);
+
+  return {
+    h: get("hour"),
+    m: get("minute"),
+    s: get("second"),
+  };
+}
+
+function updateGmtHand() {
+  const now = new Date();
+  const zone = gmtCity.value;
+
+  const { h, m, s } = getTimePartsInZone(now, zone);
+
+  // 24-hour angle
+  const hour24 = h + m / 60 + s / 3600;
+  const angle = (hour24 / 24) * 360;
+
+  // Position the GMT hand
+  gmtHand.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+
+  // Readout (city local time)
+  const ampm = useAmPm?.checked;
+  let displayHour = h;
+  let suffix = "";
+
+  if (ampm) {
+    suffix = h >= 12 ? " PM" : " AM";
+    displayHour = h % 12;
+    if (displayHour === 0) displayHour = 12;
+  }
+
+  gmtReadout.textContent = `${pad2(displayHour)}:${pad2(m)}:${pad2(s)}${suffix}`;
+  gmtSubReadout.textContent = `${gmtCity.options[gmtCity.selectedIndex].text} (24h bezel position)`;
+
+  requestAnimationFrame(updateGmtHand);
+}
+
+applyBezelStyle(bezelStyle.value);
+bezelStyle.addEventListener("change", () => applyBezelStyle(bezelStyle.value));
+
+// Start it
+requestAnimationFrame(updateGmtHand);
+
+// If you want an immediate “snap” when changing city:
+gmtCity.addEventListener("change", () => {
+  // no-op; the RAF loop will reflect it immediately
+});
 
 // =========================
 // Moon Phase (No API)
@@ -227,14 +354,14 @@ function drawMoonByName(name) {
   //  - Waxing: lit on right
   //  - Waning: lit on left
   const presets = {
-    "New Moon":         { litSide: "right", litAmount: 0.00 },
-    "Waxing Crescent":  { litSide: "right", litAmount: 0.20 },
-    "First Quarter":    { litSide: "right", litAmount: 0.50 },
-    "Waxing Gibbous":   { litSide: "right", litAmount: 0.80 },
-    "Full Moon":        { litSide: "right", litAmount: 1.00 },
-    "Waning Gibbous":   { litSide: "left",  litAmount: 0.80 },
-    "Last Quarter":     { litSide: "left",  litAmount: 0.50 },
-    "Waning Crescent":  { litSide: "left",  litAmount: 0.20 },
+    "New Moon": { litSide: "right", litAmount: 0.00 },
+    "Waxing Crescent": { litSide: "right", litAmount: 0.20 },
+    "First Quarter": { litSide: "right", litAmount: 0.50 },
+    "Waxing Gibbous": { litSide: "right", litAmount: 0.80 },
+    "Full Moon": { litSide: "right", litAmount: 1.00 },
+    "Waning Gibbous": { litSide: "left", litAmount: 0.80 },
+    "Last Quarter": { litSide: "left", litAmount: 0.50 },
+    "Waning Crescent": { litSide: "left", litAmount: 0.20 },
   };
 
   const p = presets[name] || presets["New Moon"];
@@ -286,10 +413,6 @@ function drawMoonByName(name) {
 }
 
 
-
-
-
-
 let moonTimer = null;
 
 function updateMoon() {
@@ -300,7 +423,7 @@ function updateMoon() {
   moonIllum.textContent = Math.round(info.illum * 100);
   moonAge.textContent = info.age.toFixed(2);
 
-  drawMoonByName(info.phase);
+  drawMoonByName(info.name);
 }
 
 function setMoonInterval() {
