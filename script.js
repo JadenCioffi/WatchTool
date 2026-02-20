@@ -306,12 +306,12 @@ function phaseNameFromAge(age, synodicMonth) {
   return "Waning Crescent";
 }
 
-function drawMoonByName(name) {
-  const w = moonCanvas.width;
-  const h = moonCanvas.height;
+function drawMoonPhase(phase) {
+  const w  = moonCanvas.width;
+  const h  = moonCanvas.height;
   const cx = w / 2;
   const cy = h / 2;
-  const r = Math.min(w, h) * 0.38;
+  const r  = Math.min(w, h) * 0.38;
 
   ctx.clearRect(0, 0, w, h);
 
@@ -321,90 +321,62 @@ function drawMoonByName(name) {
   ctx.fillStyle = "rgba(255,255,255,0.04)";
   ctx.fill();
 
-  // Bright base disc
+  // Base dark disc
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(240,243,248,0.92)";
+  ctx.fillStyle = "rgba(8,10,14,0.9)";
   ctx.fill();
 
-  // Optional subtle texture
+  // Normalize phase
+  let p = phase % 1;
+  if (p < 0) p += 1;
+
+  // Determine waxing/waning
+  const waxing = p <= 0.5;
+
+  // Illumination fraction (0..1), symmetric around full
+  const illum = p <= 0.5 ? p * 2 : (1 - p) * 2;
+
+  // For half moon (illum=0.5) ellipse radius = 0
+  // For full moon (illum=1)  ellipse radius = 1
+  // For new moon (illum=0)  ellipse radius = 1, but we will not show any lit part
+  const e = 1 - 2 * Math.abs(illum - 0.5);  // 0 at quarter, 1 at new/full
+
+  // Clip to moon disc
   ctx.save();
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.clip();
-  ctx.fillStyle = "rgba(0,0,0,0.06)";
-  for (let i = 0; i < 120; i++) {
-    const x = cx + (Math.random() * 2 - 1) * r;
-    const y = cy + (Math.random() * 2 - 1) * r;
-    const rr = Math.random() * 2.2;
-    ctx.beginPath();
-    ctx.arc(x, y, rr, 0, Math.PI * 2);
+
+  // Draw the illuminated part:
+  // - Start with the half facing the Sun (right for waxing, left for waning).
+  // - Use an ellipse inside that half to trim the shape for crescents/gibbous.
+  ctx.beginPath();
+
+  if (waxing) {
+    // Right side lit
+    // Start at top center, go around right semicircle, then back with an ellipse
+    ctx.moveTo(cx, cy - r);
+    ctx.arc(cx, cy, r, -Math.PI / 2, Math.PI / 2, false); // right half of big circle
+    ctx.ellipse(cx, cy, r * e, r, 0, Math.PI / 2, -Math.PI / 2, true);
+  } else {
+    // Left side lit
+    ctx.moveTo(cx, cy - r);
+    ctx.arc(cx, cy, r, -Math.PI / 2, Math.PI / 2, true); // left half of big circle
+    ctx.ellipse(cx, cy, r * e, r, 0, Math.PI / 2, -Math.PI / 2, false);
+  }
+
+  ctx.closePath();
+
+  // If illumination is essentially zero, skip filling (keep dark)
+  if (illum > 0.01) {
+    ctx.fillStyle = "rgba(240,243,248,0.95)";
     ctx.fill();
   }
-  ctx.restore();
-
-  // Clip all shading to the disc
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx.clip();
-
-  // Lookup presets (8-phase)
-  // Northern hemisphere convention:
-  //  - Waxing: lit on right
-  //  - Waning: lit on left
-  const presets = {
-    "New Moon": { litSide: "right", litAmount: 0.00 },
-    "Waxing Crescent": { litSide: "right", litAmount: 0.20 },
-    "First Quarter": { litSide: "right", litAmount: 0.50 },
-    "Waxing Gibbous": { litSide: "right", litAmount: 0.80 },
-    "Full Moon": { litSide: "right", litAmount: 1.00 },
-    "Waning Gibbous": { litSide: "left", litAmount: 0.80 },
-    "Last Quarter": { litSide: "left", litAmount: 0.50 },
-    "Waning Crescent": { litSide: "left", litAmount: 0.20 },
-  };
-
-  const p = presets[name] || presets["New Moon"];
-
-  // Shadow paint
-  if (p.litAmount < 1.0) {
-    ctx.fillStyle = "rgba(8,10,14,0.88)";
-
-    const shadowAmount = 1.0 - p.litAmount; // 0 = full, 1 = new
-    const shadowW = 2 * r * shadowAmount;
-
-    // If new moon, just fill everything dark
-    if (p.litAmount <= 0.001) {
-      ctx.fillRect(cx - r, cy - r, 2 * r, 2 * r);
-    } else {
-      // Draw the main shadow block
-      if (p.litSide === "right") {
-        // Light on right => shadow on left
-        ctx.fillRect(cx - r, cy - r, shadowW, 2 * r);
-
-        // Add curved terminator by overlapping a shadow circle
-        // Place the circle center at the terminator edge, slightly offset
-        const edgeX = cx - r + shadowW;
-        const curveOffset = r * 0.55; // tweak 0.45..0.70 for more/less curvature
-        ctx.beginPath();
-        ctx.arc(edgeX - curveOffset, cy, r, 0, Math.PI * 2);
-        ctx.fill();
-      } else {
-        // Light on left => shadow on right
-        ctx.fillRect(cx + r - shadowW, cy - r, shadowW, 2 * r);
-
-        const edgeX = cx + r - shadowW;
-        const curveOffset = r * 0.55;
-        ctx.beginPath();
-        ctx.arc(edgeX + curveOffset, cy, r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-  }
 
   ctx.restore();
 
-  // Rim
+  // Rim highlight
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, Math.PI * 2);
   ctx.strokeStyle = "rgba(255,255,255,0.18)";
@@ -416,15 +388,16 @@ function drawMoonByName(name) {
 let moonTimer = null;
 
 function updateMoon() {
-  const now = new Date(); // local time; phase calc works fine either way for a POC
+  const now = new Date();
   const info = getMoonPhaseInfo(now);
 
   moonName.textContent = info.name;
   moonIllum.textContent = Math.round(info.illum * 100);
   moonAge.textContent = info.age.toFixed(2);
 
-  drawMoonByName(info.name);
+  drawMoonPhase(info.phase);   // <-- use phase (0..1)
 }
+
 
 function setMoonInterval() {
   if (moonTimer) clearInterval(moonTimer);
