@@ -5,6 +5,7 @@
   --muted: #a8b0c0;
   --line: rgba(255, 255, 255, 0.12);
   --accent: #6ea8ff;
+  --gmt-hand: var(--accent);
 }
 
 * { box-sizing: border-box; }
@@ -242,9 +243,10 @@ button:hover { background: rgba(110,168,255,0.22); }
 /* GMT hand (24h) */
 .hand.gmt {
   width: 3px;
-  height: 80px;              /* shorter so the triangle fits inside bezel */
-  background: var(--accent);
+  height: 76px;              /* shorter so the triangle fits inside bezel */
+  background: var(--gmt-hand);
   box-shadow: 0 0 16px rgba(110,168,255,0.25);
+  /* background: rgba(110, 168, 255, 0.92);  */
   position: absolute;
 }
 
@@ -281,7 +283,7 @@ button:hover { background: rgba(110,168,255,0.22); }
 
   border-left: 9px solid transparent;
   border-right: 9px solid transparent;
-  border-bottom: 14px solid var(--accent);
+  border-bottom: 14px solid rgb(255, 255, 255);
 }
 
 

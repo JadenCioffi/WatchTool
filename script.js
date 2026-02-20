@@ -156,17 +156,19 @@ function updateClock() {
 
 function applyBezelStyle(style) {
   const styles = {
-    batman: { top: "rgba(10,10,12,0.92)", bottom: "rgba(40,70,150,0.92)" }, // black/blue
-    coke: { top: "rgba(10,10,12,0.92)", bottom: "rgba(150,35,35,0.92)" }, // black/red
-    bruce: { top: "rgba(10,10,12,0.92)", bottom: "rgba(80,85,95,0.92)" },  // black/gray
-    pepsi: { top: "rgba(40,70,150,0.92)", bottom: "rgba(150,35,35,0.92)" }, // blue/red
-    root_beer: { top: "rgba(10,10,12,0.92)", bottom: "rgb(71, 32, 26, 0.92)" } // black/brown
+    batman: { top: "rgba(10,10,12,0.92)", bottom: "rgba(40,70,150,0.92)", hand: "rgba(110, 168, 255, 0.92)"}, // black/blue/blue gmt
+    coke: { top: "rgba(10,10,12,0.92)", bottom: "rgba(150,35,35,0.92)", hand: "rgba(150,35,35,0.92)"}, // black/red/red gmt
+    bruce: { top: "rgba(10,10,12,0.92)", bottom: "rgba(80,85,95,0.92)", hand: "rgba(16, 116, 50, 0.92)"},  // black/gray/green gmt
+    pepsi: { top: "rgba(40,70,150,0.92)", bottom: "rgba(150,35,35,0.92)", hand: "rgba(150,35,35,0.92)"}, // blue/red/red gmt
+    root_beer: { top: "rgba(10,10,12,0.92)", bottom: "rgba(71, 32, 26, 0.92)", hand: "rgba(71, 32, 26, 0.92)"} // black/brown/white gmt
 
   };
 
   const s = styles[style] || styles.batman;
   gmtBezel.style.setProperty("--bezel-top", s.top);
   gmtBezel.style.setProperty("--bezel-bottom", s.bottom);
+  document.documentElement.style.setProperty("--gmt-hand", s.hand);
+
 }
 
 
