@@ -25,7 +25,35 @@
       <div class="clock-row">
         <div class="clock" aria-label="Analog clock">
           <div class="dial"></div>
+          <!-- Day (Rolex-style arc at 12) -->
+          <!-- Day (Rolex-style curved window at 12) -->
+<svg class="day-arc" viewBox="0 0 240 240" aria-hidden="true">
+  <!-- Window shape: curved rectangle (outer arc -> rounded sides -> inner arc -> rounded sides) -->
+  <path
+    class="day-window-bg"
+    d="
+      M 72 78 A 60 60 0 0 1 168 78 A 60 60 0 0 0 157 90 A 48 48 0 0 0 84 90 Q 72 78 72 78
+    "
+  ></path>
 
+  <!-- Text path sits a bit LOWER than the top arc so letters stay inside the window -->
+  <path id="dayPath" d="M78,88 A52,52 0 0 1 162,88" fill="none"></path>
+
+  <text class="day-text">
+    <textPath
+      href="#dayPath"
+      startOffset="50%"
+      text-anchor="middle"
+      id="dayTextPath"
+      dy="2"
+    ></textPath>
+  </text>
+</svg>
+
+          <!-- Date window at 3 -->
+          <div class="date-window">
+            <span id="dateWindowText">--</span>
+          </div>
           <div class="hand hour" id="hourHand"></div>
           <div class="hand minute" id="minuteHand"></div>
           <div class="hand second" id="secondHand"></div>
@@ -98,7 +126,7 @@
 
           <p class="tip">
             Note: Real moonphase can differ slightly from this approximation (timezones, orbital details, etc.),
-            but it’s usually close enough for “setting a watch” purposes.
+            but it’s usually close enough for setting a moonphase complication.
           </p>
         </div>
       </div>

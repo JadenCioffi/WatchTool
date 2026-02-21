@@ -21,6 +21,9 @@ const timeSource = document.getElementById("timeSource");
 const showMs = document.getElementById("showMs");
 const useAmPm = document.getElementById("useAmPm");
 
+const dayTextPath = document.getElementById("dayTextPath");
+const dateWindowText = document.getElementById("dateWindowText");
+
 // =========================
 // GMT / 24-hour bezel helper
 // =========================
@@ -63,6 +66,19 @@ function updateClock() {
     year = now.getFullYear();
     month = now.getMonth();
     day = now.getDate();
+  }
+
+  // --- Day-Date complication ---
+  const dayName = (timeSource.value === "utc")
+    ? new Intl.DateTimeFormat(undefined, { weekday: "long", timeZone: "UTC" }).format(now)
+    : new Intl.DateTimeFormat(undefined, { weekday: "long" }).format(now);
+
+  if (dayTextPath) {
+    dayTextPath.textContent = dayName.toUpperCase();
+  }
+
+  if (dateWindowText) {
+    dateWindowText.textContent = String(day);
   }
 
   const secFrac = (s + ms / 1000) / 60;
@@ -156,11 +172,11 @@ function updateClock() {
 
 function applyBezelStyle(style) {
   const styles = {
-    batman: { top: "rgba(10,10,12,0.92)", bottom: "rgba(40,70,150,0.92)", hand: "rgba(110, 168, 255, 0.92)"}, // black/blue/blue gmt
-    coke: { top: "rgba(10,10,12,0.92)", bottom: "rgba(150,35,35,0.92)", hand: "rgba(150,35,35,0.92)"}, // black/red/red gmt
-    bruce: { top: "rgba(10,10,12,0.92)", bottom: "rgba(80,85,95,0.92)", hand: "rgba(16, 116, 50, 0.92)"},  // black/gray/green gmt
-    pepsi: { top: "rgba(40,70,150,0.92)", bottom: "rgba(150,35,35,0.92)", hand: "rgba(150,35,35,0.92)"}, // blue/red/red gmt
-    root_beer: { top: "rgba(10,10,12,0.92)", bottom: "rgba(71, 32, 26, 0.92)", hand: "rgba(71, 32, 26, 0.92)"} // black/brown/white gmt
+    batman: { top: "rgba(10,10,12,0.92)", bottom: "rgba(40,70,150,0.92)", hand: "rgba(110, 168, 255, 0.92)" }, // black/blue/blue gmt
+    coke: { top: "rgba(10,10,12,0.92)", bottom: "rgba(150,35,35,0.92)", hand: "rgba(150,35,35,0.92)" }, // black/red/red gmt
+    bruce: { top: "rgba(10,10,12,0.92)", bottom: "rgba(80,85,95,0.92)", hand: "rgba(16, 116, 50, 0.92)" },  // black/gray/green gmt
+    pepsi: { top: "rgba(40,70,150,0.92)", bottom: "rgba(150,35,35,0.92)", hand: "rgba(150,35,35,0.92)" }, // blue/red/red gmt
+    root_beer: { top: "rgba(10,10,12,0.92)", bottom: "rgba(71, 32, 26, 0.92)", hand: "rgba(71, 32, 26, 0.92)" } // black/brown/white gmt
 
   };
 
@@ -309,11 +325,11 @@ function phaseNameFromAge(age, synodicMonth) {
 }
 
 function drawMoonPhase(phase) {
-  const w  = moonCanvas.width;
-  const h  = moonCanvas.height;
+  const w = moonCanvas.width;
+  const h = moonCanvas.height;
   const cx = w / 2;
   const cy = h / 2;
-  const r  = Math.min(w, h) * 0.38;
+  const r = Math.min(w, h) * 0.38;
 
   ctx.clearRect(0, 0, w, h);
 

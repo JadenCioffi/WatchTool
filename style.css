@@ -299,6 +299,56 @@ button:hover { background: rgba(110,168,255,0.22); }
   z-index: 5;
 }
 
+/* --- DAY ARC (12 o’clock) --- */
+.day-arc {
+  position: absolute;
+  inset: 0;
+  z-index: 3; /* above dial, below hands */
+  pointer-events: none;
+}
+
+.day-window-bg {
+  fill: rgba(255,255,255,0.08);
+  stroke: rgba(255,255,255,0.15);
+  stroke-width: 1;
+}
+
+.day-text {
+  font: 700 11px system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  letter-spacing: 0.16em;
+  fill: rgba(255,255,255,0.88);
+
+  /* Helps prevent the “jumping” feel by normalizing baseline behavior */
+  dominant-baseline: middle;
+}
+
+.day-window-bg {
+  fill: rgba(255,255,255,0.10);
+  stroke: rgba(255,255,255,0.18);
+  stroke-width: 1;
+}
+
+/* --- DATE WINDOW (3 o’clock) --- */
+.date-window {
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 26px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  display: grid;
+  place-items: center;
+  z-index: 3;
+}
+
+#dateWindowText {
+  font: 700 14px system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: rgba(255,255,255,0.95);
+}
+
 /* WATCH LIST */
 .watch-list { display: grid; gap: 10px; }
 .items { margin: 0; padding-left: 18px; }
