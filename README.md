@@ -4,4 +4,8 @@
 
 Link: https://jadencioffi.github.io/WatchTool/
 
+Special Thanks:
+Yann Armelin (yqnn) -> Online SVG Editor: https://github.com/Yqnn/svg-path-editor
+
+
 [!] IMPORTANT -> Largely A.I. generated using basic ChatGPT prompting [!]

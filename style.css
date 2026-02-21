@@ -8,7 +8,10 @@
   --gmt-hand: var(--accent);
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -16,25 +19,50 @@ body {
   color: var(--text);
 }
 
-.wrap { max-width: 980px; margin: 0 auto; padding: 18px; }
-.grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.wrap {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 18px;
+}
 
-h1 { margin: 0 0 6px; font-size: 24px; }
-h2 { margin: 0 0 12px; font-size: 18px; }
-p { margin: 8px 0; }
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+h1 {
+  margin: 0 0 6px;
+  font-size: 24px;
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+p {
+  margin: 8px 0;
+}
 
 .card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 14px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
-.muted { color: var(--muted); }
-.small { font-size: 12px; }
+.muted {
+  color: var(--muted);
+}
 
-.clock-row, .moon-row {
+.small {
+  font-size: 12px;
+}
+
+.clock-row,
+.moon-row {
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 14px;
@@ -60,33 +88,42 @@ p { margin: 8px 0; }
   align-items: center;
 }
 
-input, select, button {
+input,
+select,
+button {
   border-radius: 10px;
   border: 1px solid var(--line);
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--text);
   padding: 10px 10px;
   outline: none;
 }
 
-select { color-scheme: dark; }
-select option, select optgroup {
+select {
+  color-scheme: dark;
+}
+
+select option,
+select optgroup {
   background: #141826;
   color: #e9ecf1;
 }
 
 button {
   cursor: pointer;
-  background: rgba(110,168,255,0.15);
-  border-color: rgba(110,168,255,0.35);
+  background: rgba(110, 168, 255, 0.15);
+  border-color: rgba(110, 168, 255, 0.35);
 }
-button:hover { background: rgba(110,168,255,0.22); }
+
+button:hover {
+  background: rgba(110, 168, 255, 0.22);
+}
 
 .tip {
   margin-top: 10px;
   font-size: 13px;
   color: var(--muted);
-  border-left: 3px solid rgba(110,168,255,0.4);
+  border-left: 3px solid rgba(110, 168, 255, 0.4);
   padding-left: 10px;
 }
 
@@ -99,19 +136,21 @@ button:hover { background: rgba(110,168,255,0.22); }
   margin: 0 auto;
   border: 1px solid var(--line);
   background:
-    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), rgba(255,255,255,0.02)),
-    radial-gradient(circle at 70% 80%, rgba(110,168,255,0.06), transparent 50%);
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+    radial-gradient(circle at 70% 80%, rgba(110, 168, 255, 0.06), transparent 50%);
   overflow: hidden;
 }
 
 /* Ensure predictable layering inside .clock */
-.clock > * { position: absolute; }
+.clock>* {
+  position: absolute;
+}
 
 /* Dial sits below bezel */
 .dial {
   inset: 0;
   border-radius: 999px;
-  box-shadow: inset 0 0 0 8px rgba(0,0,0,0.18);
+  box-shadow: inset 0 0 0 8px rgba(0, 0, 0, 0.18);
   z-index: 1;
 }
 
@@ -123,24 +162,22 @@ button:hover { background: rgba(110,168,255,0.22); }
   opacity: 0.95;
   z-index: 2;
 
-  background: conic-gradient(
-    from -90deg,
-    var(--bezel-top) 0deg 179.6deg,
-    var(--bezel-bottom) 180.4deg 360deg
-  );
+  background: conic-gradient(from -90deg,
+      var(--bezel-top) 0deg 179.6deg,
+      var(--bezel-bottom) 180.4deg 360deg);
 
   -webkit-mask: radial-gradient(circle, transparent 0 58%, #000 59% 100%);
   mask: radial-gradient(circle, transparent 0 58%, #000 59% 100%);
 
   box-shadow:
-    inset 0 0 0 2px rgba(255,255,255,0.10),
-    inset 0 0 0 10px rgba(0,0,0,0.35);
+    inset 0 0 0 2px rgba(255, 255, 255, 0.10),
+    inset 0 0 0 10px rgba(0, 0, 0, 0.35);
 }
 
 /* default bezel colors (Batman) */
 #gmtBezel {
-  --bezel-top: rgba(10,10,12,0.92);
-  --bezel-bottom: rgba(40,70,150,0.92);
+  --bezel-top: rgba(10, 10, 12, 0.92);
+  --bezel-bottom: rgba(40, 70, 150, 0.92);
 }
 
 /* Tick layers above bezel */
@@ -155,14 +192,14 @@ button:hover { background: rgba(110,168,255,0.22); }
   top: 50%;
   width: 2px;
   height: 10px;
-  background: rgba(255,255,255,0.35);
+  background: rgba(255, 255, 255, 0.35);
   transform-origin: center;
 }
 
 .tick.major {
   height: 16px;
   width: 3px;
-  background: rgba(255,255,255,0.65);
+  background: rgba(255, 255, 255, 0.65);
   transform-origin: center;
 }
 
@@ -178,7 +215,7 @@ button:hover { background: rgba(110,168,255,0.22); }
   transform-origin: center;
   text-align: center;
   font-weight: 700;
-  color: rgba(255,255,255,0.92);
+  color: rgba(255, 255, 255, 0.92);
   pointer-events: none;
   user-select: none;
 }
@@ -189,16 +226,16 @@ button:hover { background: rgba(110,168,255,0.22); }
   height: 20px;
   line-height: 20px;
   transform: translate(-50%, -50%);
-  text-shadow: 0 2px 10px rgba(0,0,0,0.45);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
 }
 
 #gmtTicks .gmt-dot {
   width: 6px;
   height: 6px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.85);
+  background: rgba(255, 255, 255, 0.85);
   transform: translate(-50%, -50%);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.45);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
 }
 
 #gmtTicks .gmt-tri {
@@ -207,8 +244,8 @@ button:hover { background: rgba(110,168,255,0.22); }
   transform: translate(-50%, -50%);
   border-left: 9px solid transparent;
   border-right: 9px solid transparent;
-  border-bottom: 14px solid rgba(255,255,255,0.92);
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+  border-bottom: 14px solid rgba(255, 255, 255, 0.92);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
 }
 
 /* Hands above bezel + markers */
@@ -224,28 +261,29 @@ button:hover { background: rgba(110,168,255,0.22); }
 .hand.hour {
   width: 6px;
   height: 70px;
-  background: rgba(255,255,255,0.78);
+  background: rgba(255, 255, 255, 0.78);
 }
 
 .hand.minute {
   width: 4px;
   height: 95px;
-  background: rgba(255,255,255,0.65);
+  background: rgba(255, 255, 255, 0.65);
 }
 
 .hand.second {
   width: 2px;
   height: 104px;
   background: var(--accent);
-  box-shadow: 0 0 18px rgba(110,168,255,0.35);
+  box-shadow: 0 0 18px rgba(110, 168, 255, 0.35);
 }
 
 /* GMT hand (24h) */
 .hand.gmt {
   width: 3px;
-  height: 76px;              /* shorter so the triangle fits inside bezel */
+  height: 76px;
+  /* shorter so the triangle fits inside bezel */
   background: var(--gmt-hand);
-  box-shadow: 0 0 16px rgba(110,168,255,0.25);
+  box-shadow: 0 0 16px rgba(110, 168, 255, 0.25);
   /* background: rgba(110, 168, 255, 0.92);  */
   position: absolute;
 }
@@ -256,7 +294,8 @@ button:hover { background: rgba(110,168,255,0.22); }
 .hand.gmt::before {
   content: "";
   position: absolute;
-  top: -16px;                 /* slightly higher than the fill */
+  top: -16px;
+  /* slightly higher than the fill */
   left: 50%;
   transform: translateX(-50%);
 
@@ -267,7 +306,7 @@ button:hover { background: rgba(110,168,255,0.22); }
   border-right: 11px solid transparent;
   border-bottom: 17px solid rgb(255, 255, 255);
 
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.55));
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
 }
 
 /* Triangle fill (front) */
@@ -295,7 +334,7 @@ button:hover { background: rgba(110,168,255,0.22); }
   height: 10px;
   transform: translate(-50%, -50%);
   border-radius: 999px;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   z-index: 5;
 }
 
@@ -303,28 +342,29 @@ button:hover { background: rgba(110,168,255,0.22); }
 .day-arc {
   position: absolute;
   inset: 0;
-  z-index: 3; /* above dial, below hands */
+  z-index: 3;
+  /* above dial, below hands */
   pointer-events: none;
 }
 
 .day-window-bg {
-  fill: rgba(255,255,255,0.08);
-  stroke: rgba(255,255,255,0.15);
+  fill: rgba(255, 255, 255, 0.08);
+  stroke: rgba(255, 255, 255, 0.15);
   stroke-width: 1;
 }
 
 .day-text {
   font: 700 11px system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   letter-spacing: 0.16em;
-  fill: rgba(255,255,255,0.88);
+  fill: rgba(255, 255, 255, 0.88);
 
   /* Helps prevent the “jumping” feel by normalizing baseline behavior */
   dominant-baseline: middle;
 }
 
 .day-window-bg {
-  fill: rgba(255,255,255,0.10);
-  stroke: rgba(255,255,255,0.18);
+  fill: rgba(255, 255, 255, 0.10);
+  stroke: rgba(255, 255, 255, 0.18);
   stroke-width: 1;
 }
 
@@ -337,8 +377,8 @@ button:hover { background: rgba(110,168,255,0.22); }
   width: 38px;
   height: 26px;
   border-radius: 6px;
-  background: rgba(255,255,255,0.10);
-  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   display: grid;
   place-items: center;
   z-index: 3;
@@ -346,10 +386,20 @@ button:hover { background: rgba(110,168,255,0.22); }
 
 #dateWindowText {
   font: 700 14px system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  color: rgba(255,255,255,0.95);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 /* WATCH LIST */
-.watch-list { display: grid; gap: 10px; }
-.items { margin: 0; padding-left: 18px; }
-.items li { margin: 6px 0; }
+.watch-list {
+  display: grid;
+  gap: 10px;
+}
+
+.items {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.items li {
+  margin: 6px 0;
+}

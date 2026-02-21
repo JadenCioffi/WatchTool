@@ -13,7 +13,7 @@
   <header class="wrap">
     <h1>Watch Tool</h1>
     <p class="muted">
-      Use this to visually match your watch’s seconds/minutes/hours. Moonphase is an offline approximation (no API).
+      Use this to visually match your watch’s displayed time and complications.
     </p>
   </header>
 
@@ -27,28 +27,27 @@
           <div class="dial"></div>
           <!-- Day (Rolex-style arc at 12) -->
           <!-- Day (Rolex-style curved window at 12) -->
-<svg class="day-arc" viewBox="0 0 240 240" aria-hidden="true">
-  <!-- Window shape: curved rectangle (outer arc -> rounded sides -> inner arc -> rounded sides) -->
-  <path
-    class="day-window-bg"
-    d="
-      M 72 78 A 60 60 0 0 1 168 78 A 60 60 0 0 0 157 90 A 48 48 0 0 0 84 90 Q 72 78 72 78
-    "
-  ></path>
+          <!-- Day (dial-integrated curved window at 12) -->
+          <svg class="day-arc" viewBox="0 0 240 240" aria-hidden="true">
+            <!-- Window is a concentric ring segment:
+       outer radius = 102 (matches tick radius),
+       inner radius = 86 (window thickness = 16px),
+       spanning -135° to -45° (symmetrical around 12). -->
+            <path class="day-window-bg" d="
+              M 53.532 53.532
+              A 94 94 0 0 1 186.468 53.532
+              L 176.569 63.431
+              A 80 80 0 0 0 63.431 63.431
+              Z
+            "></path>
 
-  <!-- Text path sits a bit LOWER than the top arc so letters stay inside the window -->
-  <path id="dayPath" d="M78,88 A52,52 0 0 1 162,88" fill="none"></path>
+            <!-- Text path: concentric too (radius between the two edges) -->
+            <path id="dayPath" d="M 57.574 57.574 A 88 88 0 0 1 182.426 57.574" fill="none"></path>
 
-  <text class="day-text">
-    <textPath
-      href="#dayPath"
-      startOffset="50%"
-      text-anchor="middle"
-      id="dayTextPath"
-      dy="2"
-    ></textPath>
-  </text>
-</svg>
+            <text class="day-text" dy="3">
+              <textPath href="#dayPath" startOffset="50%" text-anchor="middle" id="dayTextPath"></textPath>
+            </text>
+          </svg>
 
           <!-- Date window at 3 -->
           <div class="date-window">
